@@ -22,6 +22,11 @@ public class Card : MonoBehaviour
         backCanvas = BackFace.GetComponent<Canvas>();
     }
 
+    void Start()
+    {
+        SetOrientation(CardOrientation.Back);
+    }
+
     [ContextMenu("flip card")]
     public void FlipCard()
     {
