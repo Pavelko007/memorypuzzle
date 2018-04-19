@@ -58,4 +58,9 @@ public class Card : MonoBehaviour
         }
         curOrientation = newOrientation;
     }
+
+    public void OnBackFaceClicked()
+    {
+        FlipCard();
+    }
 }
