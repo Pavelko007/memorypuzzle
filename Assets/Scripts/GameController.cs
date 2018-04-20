@@ -5,15 +5,29 @@ using UnityEngine;
 public class GameController : MonoBehaviour
 {
     public GameObject cardPrefab;
+
     public float Size = .5f;
     public float Gap = .25f;
+
     public Vector3 UpperLeftPos = new Vector3(0,0,0);
+
     public int numRows = 2;
     public int numCols = 2;
+
+    public float ShowCardsDelay = 1f;
+
     public static GameController Instance;
     private Card firstCard;
     private Card secondCard;
-    public float ShowCardsDelay = 1f;
+
+
+    enum State
+    {
+        Default,
+        ShowingCards
+    }
+
+    private State state = State.Default;
 
     void Awake()
     {
@@ -33,10 +47,6 @@ public class GameController : MonoBehaviour
 	        }
 	    }
 	}
-	
-	//void Update () {
-		
-	//}
 
     public void OnCardFlipped(Card card)
     {
@@ -75,12 +85,16 @@ public class GameController : MonoBehaviour
         firstCard = null;
         secondCard = null;
 
+        state = State.ShowingCards;
+
         yield return new WaitForSeconds(ShowCardsDelay);
 
         foreach (var card in cardsToRemove)
         {
             Destroy(card.gameObject);
         }
+
+        state = State.Default;
     }
 
     private void OnCardsDifferent()
@@ -95,11 +109,20 @@ public class GameController : MonoBehaviour
         firstCard = null;
         secondCard = null;
 
+        state = State.ShowingCards;
+
         yield return new WaitForSeconds(ShowCardsDelay);
 
         foreach (var card in cardsToFlipBack)
         {
             card.FlipCard();
         }
+
+        state = State.Default;
+    }
+
+    public bool CanFlipCard()
+    {
+        return state != State.ShowingCards;
     }
 }
