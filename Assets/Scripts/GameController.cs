@@ -50,6 +50,12 @@ public class GameController : MonoBehaviour
 
     public void OnCardFlipped(Card card)
     {
+        if (state == State.ShowingCards)
+        {
+            CancelInvoke("HideCards");
+            HideCards();
+        }
+
         if (null == firstCard)
         {
             firstCard = card;

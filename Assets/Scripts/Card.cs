@@ -78,8 +78,6 @@ public class Card : MonoBehaviour
 
     public void OnBackFaceClicked()
     {
-        if (!GameController.Instance.CanFlipCard()) return;
-
         FlipCard();
         GameController.Instance.OnCardFlipped(this);
     }
