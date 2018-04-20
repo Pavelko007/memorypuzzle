@@ -252,6 +252,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   FrontFace: {fileID: 1679432755227986}
   BackFace: {fileID: 1559006367322976}
+  CardText: {fileID: 114757291347403050}
 --- !u!114 &114757291347403050
 MonoBehaviour:
   m_ObjectHideFlags: 1

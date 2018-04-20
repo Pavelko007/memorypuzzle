@@ -1,14 +1,17 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 
 public class Card : MonoBehaviour
 {
     public GameObject FrontFace;
     public GameObject BackFace;
+    public Text CardText;
 
     private Canvas frontCanvas;
     private Canvas backCanvas;
 
     private CardOrientation curOrientation = CardOrientation.Front;
+    private int number;
 
     enum CardOrientation
     {
@@ -27,7 +30,21 @@ public class Card : MonoBehaviour
         SetOrientation(CardOrientation.Back);
     }
 
-    [ContextMenu("flip card")]
+    public void Init(int newNumber)
+    {
+        Number = newNumber;
+    }
+
+    public int Number
+    {
+        get { return number; }
+        set
+        {
+            number = value;
+            CardText.text = number.ToString();
+        }
+    }
+
     public void FlipCard()
     {
         switch (curOrientation)
@@ -67,7 +84,7 @@ public class Card : MonoBehaviour
 
     public bool IsSame(Card secondCard)
     {
-        return true;
         Debug.Log("not implemented");
+        return true;
     }
 }

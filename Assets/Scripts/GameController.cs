@@ -25,7 +25,8 @@ public class GameController : MonoBehaviour
 	        {
 	            var horOffset = Vector3.right * col * (Size + Gap);
 	            var vertOffset = Vector3.down * row * (Size + Gap);
-	            Instantiate(cardPrefab, UpperLeftPos + horOffset + vertOffset, Quaternion.identity);
+	            var card = Instantiate(cardPrefab, UpperLeftPos + horOffset + vertOffset, Quaternion.identity).GetComponent<Card>();
+                card.Init(Random.Range(1,10));
 	        }
 	    }
 	}
