@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using UnityEngine;
 
 public class GameController : MonoBehaviour
 {
@@ -11,6 +12,7 @@ public class GameController : MonoBehaviour
     public static GameController Instance;
     private Card firstCard;
     private Card secondCard;
+    public float ShowCardsDelay = 1f;
 
     void Awake()
     {
@@ -47,8 +49,7 @@ public class GameController : MonoBehaviour
 
             if (firstCard.IsSame(secondCard))
             {
-                Destroy(firstCard.gameObject);
-                Destroy(secondCard.gameObject);
+                OnCardsMatch();
             }
             else
             {
@@ -62,8 +63,28 @@ public class GameController : MonoBehaviour
         }
     }
 
+    private void OnCardsMatch()
+    {
+        StartCoroutine(RemoveCards());
+    }
+
+    private IEnumerator RemoveCards()
+    {
+        yield return new WaitForSeconds(ShowCardsDelay);
+
+        Destroy(firstCard.gameObject);
+        Destroy(secondCard.gameObject);
+    }
+
     private void OnCardsDifferent()
     {
+        StartCoroutine(FlipCardsAfterDelay());
+    }
+
+    private IEnumerator FlipCardsAfterDelay()
+    {
+        yield return new WaitForSeconds(ShowCardsDelay);
+
         firstCard.FlipCard();
         secondCard.FlipCard();
         firstCard = null;
