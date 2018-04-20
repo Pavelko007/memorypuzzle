@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class GameController : MonoBehaviour
@@ -55,25 +56,31 @@ public class GameController : MonoBehaviour
             {
                 OnCardsDifferent();
             }
-
         }
         else
         {
-            OnCardsDifferent();
+            Debug.LogError("you already flipped two cards, this should be impossible");
         }
     }
 
     private void OnCardsMatch()
     {
-        StartCoroutine(RemoveCards());
+        StartCoroutine(RemoveCardsAfterDelay());
     }
 
-    private IEnumerator RemoveCards()
+    private IEnumerator RemoveCardsAfterDelay()
     {
+        var cardsToRemove = new List<Card>(){firstCard,secondCard};
+
+        firstCard = null;
+        secondCard = null;
+
         yield return new WaitForSeconds(ShowCardsDelay);
 
-        Destroy(firstCard.gameObject);
-        Destroy(secondCard.gameObject);
+        foreach (var card in cardsToRemove)
+        {
+            Destroy(card.gameObject);
+        }
     }
 
     private void OnCardsDifferent()
@@ -83,11 +90,16 @@ public class GameController : MonoBehaviour
 
     private IEnumerator FlipCardsAfterDelay()
     {
-        yield return new WaitForSeconds(ShowCardsDelay);
+        List<Card> cardsToFlipBack = new List<Card>(){firstCard,secondCard};
 
-        firstCard.FlipCard();
-        secondCard.FlipCard();
         firstCard = null;
         secondCard = null;
+
+        yield return new WaitForSeconds(ShowCardsDelay);
+
+        foreach (var card in cardsToFlipBack)
+        {
+            card.FlipCard();
+        }
     }
 }
