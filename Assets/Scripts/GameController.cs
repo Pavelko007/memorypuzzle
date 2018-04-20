@@ -75,36 +75,17 @@ public class GameController : MonoBehaviour
 
     private void OnCardsMatch()
     {
-        StartCoroutine(RemoveCardsAfterDelay());
-    }
-
-    private IEnumerator RemoveCardsAfterDelay()
-    {
-        var cardsToRemove = new List<Card>(){firstCard,secondCard};
-
-        firstCard = null;
-        secondCard = null;
-
-        state = State.ShowingCards;
-
-        yield return new WaitForSeconds(ShowCardsDelay);
-
-        foreach (var card in cardsToRemove)
-        {
-            Destroy(card.gameObject);
-        }
-
-        state = State.Default;
+        StartCoroutine(ShowCardsBeforeHide(true));
     }
 
     private void OnCardsDifferent()
     {
-        StartCoroutine(FlipCardsAfterDelay());
+        StartCoroutine(ShowCardsBeforeHide(false));
     }
 
-    private IEnumerator FlipCardsAfterDelay()
+    private IEnumerator ShowCardsBeforeHide(bool remove)
     {
-        List<Card> cardsToFlipBack = new List<Card>(){firstCard,secondCard};
+        List<Card> cards = new List<Card>(){firstCard,secondCard};
 
         firstCard = null;
         secondCard = null;
@@ -113,9 +94,16 @@ public class GameController : MonoBehaviour
 
         yield return new WaitForSeconds(ShowCardsDelay);
 
-        foreach (var card in cardsToFlipBack)
+        foreach (var card in cards)
         {
-            card.FlipCard();
+            if (remove)
+            {
+                Destroy(card.gameObject);
+            }
+            else
+            {
+                card.FlipCard();
+            }
         }
 
         state = State.Default;
