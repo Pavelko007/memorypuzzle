@@ -90,9 +90,11 @@ public class GameController : MonoBehaviour
         firstCard = null;
         secondCard = null;
 
-        state = State.ShowingCards;
+        state = State.ShowingCards; 
 
-        yield return new WaitForSeconds(ShowCardsDelay);
+        Invoke("HideCards", ShowCardsDelay);
+
+        yield return new WaitWhile(()=>State.ShowingCards == state);
 
         foreach (var card in cards)
         {
@@ -106,6 +108,11 @@ public class GameController : MonoBehaviour
             }
         }
 
+        state = State.Default;
+    }
+
+    private void HideCards()
+    {
         state = State.Default;
     }
 
