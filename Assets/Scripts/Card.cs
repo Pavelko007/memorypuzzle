@@ -84,7 +84,6 @@ public class Card : MonoBehaviour
 
     public bool IsSame(Card secondCard)
     {
-        Debug.Log("not implemented");
-        return true;
+        return Number == secondCard.Number;
     }
 }

@@ -31,9 +31,9 @@ public class GameController : MonoBehaviour
 	    }
 	}
 	
-	void Update () {
+	//void Update () {
 		
-	}
+	//}
 
     public void OnCardFlipped(Card card)
     {
@@ -50,6 +50,23 @@ public class GameController : MonoBehaviour
                 Destroy(firstCard.gameObject);
                 Destroy(secondCard.gameObject);
             }
+            else
+            {
+                OnCardsDifferent();
+            }
+
         }
+        else
+        {
+            OnCardsDifferent();
+        }
+    }
+
+    private void OnCardsDifferent()
+    {
+        firstCard.FlipCard();
+        secondCard.FlipCard();
+        firstCard = null;
+        secondCard = null;
     }
 }
