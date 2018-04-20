@@ -62,5 +62,12 @@ public class Card : MonoBehaviour
     public void OnBackFaceClicked()
     {
         FlipCard();
+        GameController.Instance.OnCardFlipped(this);
+    }
+
+    public bool IsSame(Card secondCard)
+    {
+        return true;
+        Debug.Log("not implemented");
     }
 }

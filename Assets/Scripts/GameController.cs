@@ -8,6 +8,14 @@ public class GameController : MonoBehaviour
     public Vector3 UpperLeftPos = new Vector3(0,0,0);
     public int numRows = 2;
     public int numCols = 2;
+    public static GameController Instance;
+    private Card firstCard;
+    private Card secondCard;
+
+    void Awake()
+    {
+        Instance = this;
+    }
 
     void Start ()
     {
@@ -25,4 +33,22 @@ public class GameController : MonoBehaviour
 	void Update () {
 		
 	}
+
+    public void OnCardFlipped(Card card)
+    {
+        if (null == firstCard)
+        {
+            firstCard = card;
+        }
+        else if (null == secondCard)
+        {
+            secondCard = card;
+
+            if (firstCard.IsSame(secondCard))
+            {
+                Destroy(firstCard.gameObject);
+                Destroy(secondCard.gameObject);
+            }
+        }
+    }
 }
