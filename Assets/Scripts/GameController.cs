@@ -85,8 +85,6 @@ public class GameController : MonoBehaviour
     {
         if (cards.Count == 0)
         {
-            var cardSize = cardPrefab.GetComponent<Card>().GetSize();
-
             var point1 = Camera.main.ViewportToWorldPoint(Vector3.zero);
             var point2 = Camera.main.ViewportToWorldPoint(Vector3.right);
 
@@ -94,18 +92,27 @@ public class GameController : MonoBehaviour
 
             var spacePerCard = screenWidthWorld / numCols;
 
+            var gapSize = spacePerCard / 10;
+
+            var cardSize = (screenWidthWorld - gapSize * (numRows + 1)) / numRows;
+
             var upperLeftCardPos = Camera.main.ViewportToWorldPoint(new Vector3(0, 1, 1)) +
-                               spacePerCard * (Vector3.right + Vector3.down) / 2;
+                               cardSize * (Vector3.right + Vector3.down) / 2 +
+                               gapSize*(Vector3.right + Vector3.down);
 
             for (int row = 0; row < numRows; row++)
             {
                 for (int col = 0; col < numCols; col++)
                 {
-                    var horOffset = Vector3.right * col * spacePerCard;
-                    var vertOffset = Vector3.down * row * spacePerCard;
+                    var horOffset = Vector3.right * col * (cardSize + gapSize);
+
+                    var vertOffset = Vector3.down * row * (cardSize + gapSize);
+
                     var position = upperLeftCardPos + horOffset + vertOffset;
+
                     var card = Instantiate(cardPrefab, position, Quaternion.identity).GetComponent<Card>();
 
+                    card.SetSize(cardSize);
                     cards.Add(card);
                 }
             }
@@ -117,6 +124,7 @@ public class GameController : MonoBehaviour
                 card.gameObject.SetActive(true);
             }
         }
+
         for (var i = 0; i < cards.Count; i++)
         {
             var card = cards[i];

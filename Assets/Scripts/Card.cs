@@ -30,10 +30,10 @@ public class Card : MonoBehaviour
         SetOrientation(CardOrientation.Front);
     }
 
-    public float GetSize()
+    private float GetSize()
     {
         var rectTransform = FrontFace.GetComponent<RectTransform>();
-        return rectTransform.rect.width * rectTransform.lossyScale.x;
+        return rectTransform.rect.width * rectTransform.localScale.x;
     }
 
     public void Init(int newNumber)
@@ -101,5 +101,11 @@ public class Card : MonoBehaviour
     public void FaceBack()
     {
         SetOrientation(Card.CardOrientation.Back);
+    }
+
+    public void SetSize(float newSize)
+    {
+        var scaleMult = newSize / GetSize();
+        transform.localScale = Vector3.one * scaleMult;
     }
 }
