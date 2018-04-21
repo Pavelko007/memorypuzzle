@@ -7,6 +7,7 @@ using Random = System.Random;
 public class GameController : MonoBehaviour
 {
     public GameObject cardPrefab;
+    public GameObject GameOverPanel;
 
     public float Size = .5f;
     public float Gap = .25f;
@@ -35,6 +36,7 @@ public class GameController : MonoBehaviour
     void Awake()
     {
         Instance = this;
+        GameOverPanel.SetActive(false);
     }
 
     void Start ()
