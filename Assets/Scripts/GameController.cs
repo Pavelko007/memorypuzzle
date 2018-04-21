@@ -26,6 +26,7 @@ public class GameController : MonoBehaviour
     enum State
     {
         Default,
+        AllCardsPreview,
         ShowingCards
     }
 
@@ -41,6 +42,19 @@ public class GameController : MonoBehaviour
         var cardNumbers = CreateRandomNumberPairs();
 
         CreateCards(cardNumbers);
+        state = State.AllCardsPreview;
+        Invoke("EndCardPreview",1f);
+    }
+
+    List<Card> cards = new List<Card>();
+
+    void EndCardPreview()
+    {
+        state = State.Default;
+        foreach (var card in cards)
+        {
+            card.FlipCard();
+        }
     }
 
     private void CreateCards(List<int> cardNumbers)
@@ -53,7 +67,7 @@ public class GameController : MonoBehaviour
                 var vertOffset = Vector3.down * row * (Size + Gap);
                 var card = Instantiate(cardPrefab, UpperLeftPos + horOffset + vertOffset, Quaternion.identity)
                     .GetComponent<Card>();
-
+                cards.Add(card);
                 var linearIndex = col + row * numCols;
                 Debug.Log(linearIndex);
                 card.Init(cardNumbers[linearIndex]);

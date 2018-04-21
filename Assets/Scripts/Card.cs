@@ -27,7 +27,7 @@ public class Card : MonoBehaviour
 
     void Start()
     {
-        SetOrientation(CardOrientation.Back);
+        SetOrientation(CardOrientation.Front);
     }
 
     public void Init(int newNumber)
