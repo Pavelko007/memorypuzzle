@@ -30,6 +30,12 @@ public class Card : MonoBehaviour
         SetOrientation(CardOrientation.Front);
     }
 
+    public float GetSize()
+    {
+        var rectTransform = FrontFace.GetComponent<RectTransform>();
+        return rectTransform.rect.width * rectTransform.lossyScale.x;
+    }
+
     public void Init(int newNumber)
     {
         Number = newNumber;

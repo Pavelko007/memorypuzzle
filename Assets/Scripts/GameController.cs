@@ -9,11 +9,6 @@ public class GameController : MonoBehaviour
     public GameObject cardPrefab;
     public GameObject GameOverPanel;
 
-    public float Size = .5f;
-    public float Gap = .25f;
-
-    public Vector3 UpperLeftPos = new Vector3(0,0,0);
-
     public int numRows = 2;
     public int numCols = 2;
 
@@ -90,13 +85,25 @@ public class GameController : MonoBehaviour
     {
         if (cards.Count == 0)
         {
+            var cardSize = cardPrefab.GetComponent<Card>().GetSize();
+
+            var point1 = Camera.main.ViewportToWorldPoint(Vector3.zero);
+            var point2 = Camera.main.ViewportToWorldPoint(Vector3.right);
+
+            var screenWidthWorld = Vector3.Distance(point2, point1);
+
+            var spacePerCard = screenWidthWorld / numCols;
+
+            var upperLeftCardPos = Camera.main.ViewportToWorldPoint(new Vector3(0, 1, 1)) +
+                               spacePerCard * (Vector3.right + Vector3.down) / 2;
+
             for (int row = 0; row < numRows; row++)
             {
                 for (int col = 0; col < numCols; col++)
                 {
-                    var horOffset = Vector3.right * col * (Size + Gap);
-                    var vertOffset = Vector3.down * row * (Size + Gap);
-                    var position = UpperLeftPos + horOffset + vertOffset;
+                    var horOffset = Vector3.right * col * spacePerCard;
+                    var vertOffset = Vector3.down * row * spacePerCard;
+                    var position = upperLeftCardPos + horOffset + vertOffset;
                     var card = Instantiate(cardPrefab, position, Quaternion.identity).GetComponent<Card>();
 
                     cards.Add(card);
