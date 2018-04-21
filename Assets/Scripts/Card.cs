@@ -13,7 +13,7 @@ public class Card : MonoBehaviour
     private CardOrientation curOrientation = CardOrientation.Front;
     private int number;
 
-    enum CardOrientation
+    public enum CardOrientation
     {
         Front,
         Back
@@ -58,7 +58,7 @@ public class Card : MonoBehaviour
         }
     }
 
-    void SetOrientation(CardOrientation newOrientation)
+    public void SetOrientation(CardOrientation newOrientation)
     {
         switch (newOrientation)
         {
@@ -85,5 +85,15 @@ public class Card : MonoBehaviour
     public bool IsSame(Card secondCard)
     {
         return Number == secondCard.Number;
+    }
+
+    public void FaceFront()
+    {
+        SetOrientation(Card.CardOrientation.Front);
+    }
+
+    public void FaceBack()
+    {
+        SetOrientation(Card.CardOrientation.Back);
     }
 }

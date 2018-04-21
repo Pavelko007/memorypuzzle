@@ -20,9 +20,14 @@ public class GameController : MonoBehaviour
     public float ShowCardsDelay = 1f;
 
     public static GameController Instance;
+
     private Card firstCard;
     private Card secondCard;
 
+    private State state = State.Default;
+    List<Card> cards = new List<Card>();
+
+    private int numFoundPairs;
 
     enum State
     {
@@ -30,8 +35,6 @@ public class GameController : MonoBehaviour
         AllCardsPreview,
         ShowingCards
     }
-
-    private State state = State.Default;
 
     void Awake()
     {
@@ -41,46 +44,83 @@ public class GameController : MonoBehaviour
 
     void Start ()
     {
+        StartGameSession();
+    }
+
+    public void StartGameSession()
+    {
+        numFoundPairs = 0;
+
         var cardNumbers = CreateRandomNumberPairs();
 
         CreateCards(cardNumbers);
+        foreach (var card in cards)
+        {
+            card.FaceFront();
+        }
         state = State.AllCardsPreview;
-        Invoke("EndCardPreview",1f);
+        Invoke("EndCardPreview", 1f);
     }
 
-    List<Card> cards = new List<Card>();
+    void Update()
+    {
+#if UNITY_EDITOR
+        if (Input.GetKeyDown(KeyCode.W))
+        {
+            GameOver();
+        }
+#endif
+    }
+
+    private void GameOver()
+    {
+        GameOverPanel.SetActive(true);
+    }
 
     void EndCardPreview()
     {
         state = State.Default;
         foreach (var card in cards)
         {
-            card.FlipCard();
+            card.FaceBack();
         }
     }
 
     private void CreateCards(List<int> cardNumbers)
     {
-        for (int row = 0; row < numRows; row++)
+        if (cards.Count == 0)
         {
-            for (int col = 0; col < numCols; col++)
+            for (int row = 0; row < numRows; row++)
             {
-                var horOffset = Vector3.right * col * (Size + Gap);
-                var vertOffset = Vector3.down * row * (Size + Gap);
-                var card = Instantiate(cardPrefab, UpperLeftPos + horOffset + vertOffset, Quaternion.identity)
-                    .GetComponent<Card>();
-                cards.Add(card);
-                var linearIndex = col + row * numCols;
-                Debug.Log(linearIndex);
-                card.Init(cardNumbers[linearIndex]);
+                for (int col = 0; col < numCols; col++)
+                {
+                    var horOffset = Vector3.right * col * (Size + Gap);
+                    var vertOffset = Vector3.down * row * (Size + Gap);
+                    var position = UpperLeftPos + horOffset + vertOffset;
+                    var card = Instantiate(cardPrefab, position, Quaternion.identity).GetComponent<Card>();
+
+                    cards.Add(card);
+                }
             }
+        }
+        else
+        {
+            foreach (var card in cards)
+            {
+                card.gameObject.SetActive(true);
+            }
+        }
+        for (var i = 0; i < cards.Count; i++)
+        {
+            var card = cards[i];
+            card.Init(cardNumbers[i]);
         }
     }
 
     private List<int> CreateRandomNumberPairs()
     {
         List<int> cardNumbers = new List<int>();
-        for (int cardNum = 1; cardNum <= numRows * numCols / 2; cardNum++)
+        for (int cardNum = 1; cardNum <= NumPairs(); cardNum++)
         {
             cardNumbers.AddRange(new List<int>() {cardNum, cardNum});
         }
@@ -88,6 +128,11 @@ public class GameController : MonoBehaviour
         var rand = new Random();
         cardNumbers = cardNumbers.OrderBy(item => rand.Next()).ToList();
         return cardNumbers;
+    }
+
+    private int NumPairs()
+    {
+        return numRows * numCols / 2;
     }
 
     public void OnCardFlipped(Card card)
@@ -123,6 +168,8 @@ public class GameController : MonoBehaviour
 
     private void OnCardsMatch()
     {
+        numFoundPairs++;
+        if(numFoundPairs == NumPairs()) GameOver();
         StartCoroutine(ShowCardsBeforeHide(true));
     }
 
@@ -133,7 +180,7 @@ public class GameController : MonoBehaviour
 
     private IEnumerator ShowCardsBeforeHide(bool remove)
     {
-        List<Card> cards = new List<Card>(){firstCard,secondCard};
+        List<Card> cardPair = new List<Card>(){firstCard,secondCard};
 
         firstCard = null;
         secondCard = null;
@@ -144,11 +191,11 @@ public class GameController : MonoBehaviour
 
         yield return new WaitWhile(()=>State.ShowingCards == state);
 
-        foreach (var card in cards)
+        foreach (var card in cardPair)
         {
             if (remove)
             {
-                Destroy(card.gameObject);
+                card.gameObject.SetActive(false);
             }
             else
             {
