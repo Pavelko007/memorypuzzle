@@ -1,6 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
+using Random = System.Random;
 
 public class GameController : MonoBehaviour
 {
@@ -36,17 +38,41 @@ public class GameController : MonoBehaviour
 
     void Start ()
     {
-	    for (int row = 0; row < numRows; row++)
-	    {
-	        for (int col = 0; col < numCols; col++)
-	        {
-	            var horOffset = Vector3.right * col * (Size + Gap);
-	            var vertOffset = Vector3.down * row * (Size + Gap);
-	            var card = Instantiate(cardPrefab, UpperLeftPos + horOffset + vertOffset, Quaternion.identity).GetComponent<Card>();
-                card.Init(Random.Range(1,10));
-	        }
-	    }
-	}
+        var cardNumbers = CreateRandomNumberPairs();
+
+        CreateCards(cardNumbers);
+    }
+
+    private void CreateCards(List<int> cardNumbers)
+    {
+        for (int row = 0; row < numRows; row++)
+        {
+            for (int col = 0; col < numCols; col++)
+            {
+                var horOffset = Vector3.right * col * (Size + Gap);
+                var vertOffset = Vector3.down * row * (Size + Gap);
+                var card = Instantiate(cardPrefab, UpperLeftPos + horOffset + vertOffset, Quaternion.identity)
+                    .GetComponent<Card>();
+
+                var linearIndex = col + row * numCols;
+                Debug.Log(linearIndex);
+                card.Init(cardNumbers[linearIndex]);
+            }
+        }
+    }
+
+    private List<int> CreateRandomNumberPairs()
+    {
+        List<int> cardNumbers = new List<int>();
+        for (int cardNum = 1; cardNum <= numRows * numCols / 2; cardNum++)
+        {
+            cardNumbers.AddRange(new List<int>() {cardNum, cardNum});
+        }
+
+        var rand = new Random();
+        cardNumbers = cardNumbers.OrderBy(item => rand.Next()).ToList();
+        return cardNumbers;
+    }
 
     public void OnCardFlipped(Card card)
     {
